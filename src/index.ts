@@ -1,9 +1,9 @@
 import crypto from "crypto"
 import axios from "axios"
 
-type PriceListType = "prepaid" | "pasca"
+export type PriceListType = "prepaid" | "pasca"
 
-type TransactoinType = null | "inq-pasca" | "pay-pasca" | "status-pasca"
+export type TransactoinType = null | "inq-pasca" | "pay-pasca" | "status-pasca"
 
 export interface DigiflazzConfigProps {
   username: string
@@ -19,13 +19,13 @@ export interface DigiflazzReturnProps<T> {
   cekIdPln: (customerNo: string) => Promise<T>
 }
 
-interface DigiflazzDepositProps {
+export interface DigiflazzDepositProps {
   amount: number
   bank: string
   name: string
 }
 
-interface DigiflazzTransactionProps {
+export interface DigiflazzTransactionProps {
   sku: string
   customerNo: string
   refId: string
