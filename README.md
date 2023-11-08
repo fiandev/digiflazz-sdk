@@ -3,11 +3,11 @@
 ## Installation
 
 ```sh
-pnpm add @dafunda-ui/react-accordion
+pnpm add digiflazz-sdk
 # or
-npm install @dafunda-ui/react-accordion
+npm install digiflazz-sdk
 # or
-yarn add @dafunda-ui/react-accordion
+yarn add digiflazz-sdk
 ```
 
 ## API
