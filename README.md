@@ -49,7 +49,9 @@ const topup = await digiflazz.transaksi({
     sku: 'sku',
     customerNo: 'customer order number',
     refId: 'reference id',
-    cmd: 'null | topup | pay-pasca | inq-pasca | status-pasca | pln-subscribe'
+    cmd: 'null | pay-pasca | inq-pasca | status-pasca | pln-subscribe'
+    testing: boolean
+    msg: 'message'
 });
 ```
 
