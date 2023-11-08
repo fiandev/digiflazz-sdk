@@ -60,4 +60,4 @@ NOTE:
 
 ### Webhook (Coming Soon)
 
-#### Seller Area (Coming Soon)
+### Seller Area (Coming Soon)
