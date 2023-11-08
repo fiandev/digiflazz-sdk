@@ -24,7 +24,9 @@ const digiflazz = createDigiflazzConfig({
 
 #### Cek Saldo
 ```js
-const amount = await digiflazz.cekSaldo();
+const amount = await digiflazz.cekSaldo({
+    cmd: 'prepaid | pasca'
+});
 ```
 
 #### Daftar Harga
