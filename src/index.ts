@@ -3,7 +3,12 @@ import axios from "axios"
 
 export type PriceListType = "prepaid" | "pasca"
 
-export type TransactoinType = null | "inq-pasca" | "pay-pasca" | "status-pasca"
+export type TransactoinType =
+  | null
+  | "inq-pasca"
+  | "pay-pasca"
+  | "status-pasca"
+  | "pln-subscribe"
 
 export interface DigiflazzConfigProps {
   username: string
@@ -16,7 +21,6 @@ export interface DigiflazzReturnProps<T> {
   daftarHarga: (cmdOption: PriceListType) => Promise<T>
   deposit: (props: DigiflazzDepositProps) => Promise<T>
   transaksi: (props: DigiflazzTransactionProps) => Promise<T>
-  cekIdPln: (customerNo: string) => Promise<T>
 }
 
 export interface DigiflazzDepositProps {
@@ -129,25 +133,10 @@ export default function createDigiflazzConfig({
     if (cmd === "inq-pasca") payload.commands = "inq-pasca"
     if (cmd === "pay-pasca") payload.commands = "pay-pasca"
     if (cmd === "status-pasca") payload.commands = "status-pasca"
+    if (cmd === "pln-subscribe") payload.commands = "pln-subscribe"
 
     try {
       const { data } = await axios.post(`${endpoint}/transaction`, payload)
-      return data
-    } catch (error) {
-      throw new Error("An error occurred while making the request.")
-    }
-  }
-
-  const cekIdPln = async (customerNo: string) => {
-    const payload = {
-      customer_no: customerNo,
-      commands: "pln-subscribe",
-    }
-
-    const body = JSON.stringify({ ...payload, username, sign: "" })
-
-    try {
-      const { data } = await axios.post(`${endpoint}/transaction`, body)
       return data
     } catch (error) {
       throw new Error("An error occurred while making the request.")
@@ -159,6 +148,5 @@ export default function createDigiflazzConfig({
     daftarHarga,
     deposit,
     transaksi,
-    cekIdPln,
   }
 }
