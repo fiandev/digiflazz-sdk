@@ -36,6 +36,9 @@ export interface DigiflazzTransactionProps {
   cmd?: TransactoinType
   testing: boolean
   msg: string
+  max_price?: number
+  cb_url?: string
+  allow_dot?: boolean
 }
 
 export default function createDigiflazzConfig({
@@ -107,6 +110,9 @@ export default function createDigiflazzConfig({
     cmd = null,
     testing,
     msg,
+    max_price,
+    cb_url,
+    allow_dot,
   }: DigiflazzTransactionProps) => {
     const payload = {
       username,
@@ -116,6 +122,9 @@ export default function createDigiflazzConfig({
       testing,
       msg,
       ...(cmd && { commands: cmd }),
+      ...(max_price && { max_price: max_price }),
+      ...(cb_url && { cb_url: cb_url }),
+      ...(allow_dot && { allow_dot: allow_dot }),
       sign: crypto
         .createHash("md5")
         .update(`${username}${key}${refId}`)
