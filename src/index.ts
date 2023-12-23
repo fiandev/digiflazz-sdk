@@ -61,7 +61,7 @@ export default function createDigiflazzConfig({
       const { data } = await axios.post(`${endpoint}/cek-saldo`, payload)
       return data
     } catch (error) {
-      throw new Error("An error occurred while making the request.")
+      return error
     }
   }
 
@@ -79,7 +79,7 @@ export default function createDigiflazzConfig({
       const { data } = await axios.post(`${endpoint}/price-list`, payload)
       return data
     } catch (error) {
-      throw new Error("An error occurred while making the request.")
+      return error
     }
   }
 
@@ -99,7 +99,7 @@ export default function createDigiflazzConfig({
       const { data } = await axios.post(`${endpoint}/deposit`, payload)
       return data
     } catch (error) {
-      throw new Error("An error occurred while making the request.")
+      return error
     }
   }
 
@@ -148,7 +148,7 @@ export default function createDigiflazzConfig({
       const { data } = await axios.post(`${endpoint}/transaction`, payload)
       return data
     } catch (error) {
-      throw new Error("An error occurred while making the request.")
+      return error
     }
   }
 
