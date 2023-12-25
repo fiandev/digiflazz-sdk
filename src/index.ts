@@ -1,5 +1,5 @@
 import crypto from "crypto"
-import axios from "axios"
+import axios, { type AxiosError, type AxiosResponse } from "axios"
 
 export type PriceListType = "prepaid" | "pasca"
 
@@ -41,6 +41,71 @@ export interface DigiflazzTransactionProps {
   allow_dot?: boolean
 }
 
+export interface CekSaldoReturnProps extends AxiosResponse {
+  data: {
+    deposit: number
+  }
+}
+
+export interface DaftarHargaPrePaidReturnProps extends AxiosResponse {
+  data: {
+    product_name: string
+    category: string
+    brand: string
+    type: string
+    seller_name: string
+    price: number
+    buyer_sku_code: string
+    buyer_product_status: boolean
+    seller_product_status: boolean
+    unlimited_stock: boolean
+    stock: number
+    multi: boolean
+    start_cut_off: string
+    end_cut_off: string
+    desc: string
+  }[]
+}
+
+export interface DaftarHargaPostPaidReturnProps extends AxiosResponse {
+  data: {
+    product_name: string
+    category: string
+    brand: string
+    seller_name: string
+    admin: number
+    commission: number
+    buyer_sku_code: string
+    buyer_product_status: boolean
+    seller_product_status: boolean
+    desc: string
+  }[]
+}
+
+export interface DepositReturnProps extends AxiosResponse {
+  data: {
+    rc: string
+    amount: number
+    notes: string
+  }
+}
+
+export interface TransaksiReturnProps extends AxiosResponse {
+  data: {
+    ref_id: string
+    customer_no: string
+    buyer_sku_code: string
+    message: string
+    status: string
+    rc: string
+    sn: string
+    buyer_last_saldo: number
+    price: number
+    tele: string
+    wa: string
+  }
+}
+
 export default function createDigiflazzConfig({
   username,
   key,
@@ -58,10 +123,27 @@ export default function createDigiflazzConfig({
     }
 
     try {
-      const { data } = await axios.post(`${endpoint}/cek-saldo`, payload)
+      const { data } = await axios.post<CekSaldoReturnProps>(
+        `${endpoint}/cek-saldo`,
+        payload,
+      )
       return data
     } catch (error) {
-      return error
+      const axiosError = error as AxiosError<unknown>
+      if (axiosError.response) {
+        const { status, data } = axiosError.response
+        let errorMessage = "Unknown error occurred"
+        if (typeof data === "string") {
+          errorMessage = data
+        } else if (data && typeof data === "object" && "message" in data) {
+          errorMessage = data.message as string
+        }
+        throw new Error(`Request failed with status ${status}: ${errorMessage}`)
+      } else if (axiosError.request) {
+        throw new Error("No response received from the server")
+      } else {
+        throw new Error("Error setting up the request")
+      }
     }
   }
 
@@ -76,10 +158,26 @@ export default function createDigiflazzConfig({
     }
 
     try {
-      const { data } = await axios.post(`${endpoint}/price-list`, payload)
+      const { data } = await axios.post<
+        DaftarHargaPrePaidReturnProps | DaftarHargaPostPaidReturnProps
+      >(`${endpoint}/price-list`, payload)
       return data
     } catch (error) {
-      return error
+      const axiosError = error as AxiosError<unknown>
+      if (axiosError.response) {
+        const { status, data } = axiosError.response
+        let errorMessage = "Unknown error occurred"
+        if (typeof data === "string") {
+          errorMessage = data
+        } else if (data && typeof data === "object" && "message" in data) {
+          errorMessage = data.message as string
+        }
+        throw new Error(`Request failed with status ${status}: ${errorMessage}`)
+      } else if (axiosError.request) {
+        throw new Error("No response received from the server")
+      } else {
+        throw new Error("Error setting up the request")
+      }
     }
   }
 
@@ -96,10 +194,27 @@ export default function createDigiflazzConfig({
     }
 
     try {
-      const { data } = await axios.post(`${endpoint}/deposit`, payload)
+      const { data } = await axios.post<DepositReturnProps>(
+        `${endpoint}/deposit`,
+        payload,
+      )
       return data
     } catch (error) {
-      return error
+      const axiosError = error as AxiosError<unknown>
+      if (axiosError.response) {
+        const { status, data } = axiosError.response
+        let errorMessage = "Unknown error occurred"
+        if (typeof data === "string") {
+          errorMessage = data
+        } else if (data && typeof data === "object" && "message" in data) {
+          errorMessage = data.message as string
+        }
+        throw new Error(`Request failed with status ${status}: ${errorMessage}`)
+      } else if (axiosError.request) {
+        throw new Error("No response received from the server")
+      } else {
+        throw new Error("Error setting up the request")
+      }
     }
   }
 
@@ -145,10 +260,27 @@ export default function createDigiflazzConfig({
     if (cmd === "pln-subscribe") payload.commands = "pln-subscribe"
 
     try {
-      const { data } = await axios.post(`${endpoint}/transaction`, payload)
+      const { data } = await axios.post<TransaksiReturnProps>(
+        `${endpoint}/transaction`,
+        payload,
+      )
       return data
     } catch (error) {
-      return error
+      const axiosError = error as AxiosError<unknown>
+      if (axiosError.response) {
+        const { status, data } = axiosError.response
+        let errorMessage = "Unknown error occurred"
+        if (typeof data === "string") {
+          errorMessage = data
+        } else if (data && typeof data === "object" && "message" in data) {
+          errorMessage = data.message as string
+        }
+        throw new Error(`Request failed with status ${status}: ${errorMessage}`)
+      } else if (axiosError.request) {
+        throw new Error("No response received from the server")
+      } else {
+        throw new Error("Error setting up the request")
+      }
     }
   }
 
