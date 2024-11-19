@@ -16,11 +16,13 @@ export interface DigiflazzConfigProps {
   webhook?: string
 }
 
-export interface DigiflazzReturnProps<T> {
-  cekSaldo: () => Promise<T>
-  daftarHarga: (cmdOption: PriceListType) => Promise<T>
-  deposit: (props: DigiflazzDepositProps) => Promise<T>
-  transaksi: (props: DigiflazzTransactionProps) => Promise<T>
+export interface DigiflazzReturnProps {
+  cekSaldo: () => Promise<CekSaldoReturnProps>
+  daftarHarga: (
+    cmdOption: PriceListType,
+  ) => Promise<DaftarHargaPrePaidReturnProps | DaftarHargaPostPaidReturnProps>
+  deposit: (props: DigiflazzDepositProps) => Promise<DepositReturnProps>
+  transaksi: (props: DigiflazzTransactionProps) => Promise<TransaksiReturnProps>
 }
 
 export interface DigiflazzDepositProps {
@@ -36,9 +38,9 @@ export interface DigiflazzTransactionProps {
   cmd?: TransactoinType
   testing: boolean
   msg: string
-  max_price?: number
-  cb_url?: string
-  allow_dot?: boolean
+  maxPrice?: number
+  cbUrl?: string
+  allowDot?: boolean
 }
 
 export interface CekSaldoReturnProps extends AxiosResponse {
@@ -109,10 +111,10 @@ export interface TransaksiReturnProps extends AxiosResponse {
 export default function createDigiflazzConfig({
   username,
   key,
-}: DigiflazzConfigProps): DigiflazzReturnProps<unknown> {
+}: DigiflazzConfigProps): DigiflazzReturnProps {
   const endpoint = "https://api.digiflazz.com/v1"
 
-  const cekSaldo = async () => {
+  const cekSaldo = async (): Promise<CekSaldoReturnProps> => {
     const payload = {
       cmd: "deposit",
       username,
@@ -147,7 +149,11 @@ export default function createDigiflazzConfig({
     }
   }
 
-  const daftarHarga = async (cmdOption: PriceListType) => {
+  const daftarHarga = async (
+    cmdOption: PriceListType,
+  ): Promise<
+    DaftarHargaPrePaidReturnProps | DaftarHargaPostPaidReturnProps
+  > => {
     const payload = {
       cmd: cmdOption,
       username,
@@ -181,12 +187,13 @@ export default function createDigiflazzConfig({
     }
   }
 
-  const deposit = async ({ amount, bank, name }: DigiflazzDepositProps) => {
+  const deposit = async (
+    props: DigiflazzDepositProps,
+  ): Promise<DepositReturnProps> => {
     const payload = {
-      username,
-      amount,
-      Bank: bank,
-      owner_name: name,
+      ...props,
+      bank: props.bank,
+      owner_name: props.name,
       sign: crypto
         .createHash("md5")
         .update(`${username}${key}deposit`)
@@ -218,28 +225,29 @@ export default function createDigiflazzConfig({
     }
   }
 
-  const transaksi = async ({
-    sku,
-    customerNo,
-    refId,
-    cmd = null,
-    testing,
-    msg,
-    max_price,
-    cb_url,
-    allow_dot,
-  }: DigiflazzTransactionProps) => {
+  const transaksi = async (
+    props: DigiflazzTransactionProps,
+  ): Promise<TransaksiReturnProps> => {
+    const {
+      sku,
+      customerNo,
+      refId,
+      cmd = null,
+      maxPrice,
+      cbUrl,
+      allowDot,
+      ...rest
+    } = props
+
     const payload = {
-      username,
+      ...rest,
       buyer_sku_code: sku,
       customer_no: customerNo,
       ref_id: refId,
-      testing,
-      msg,
       ...(cmd && { commands: cmd }),
-      ...(max_price && { max_price: max_price }),
-      ...(cb_url && { cb_url: cb_url }),
-      ...(allow_dot && { allow_dot: allow_dot }),
+      ...(maxPrice && { max_price: maxPrice }),
+      ...(cbUrl && { cb_url: cbUrl }),
+      ...(allowDot && { allow_dot: allowDot }),
       sign: crypto
         .createHash("md5")
         .update(`${username}${key}${refId}`)

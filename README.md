@@ -8,6 +8,8 @@ pnpm add digiflazz-sdk
 npm install digiflazz-sdk
 # or
 yarn add digiflazz-sdk
+# or
+bun add digiflazz-sdk
 ```
 
 ## API
